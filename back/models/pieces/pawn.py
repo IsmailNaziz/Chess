@@ -24,6 +24,3 @@ class Pawn(Piece):
         """
         pass
 
-    def __repr__(self):
-        print(self.LABEL)
-

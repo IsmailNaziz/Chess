@@ -18,6 +18,7 @@ class Board:
 
     def move_piece(self, destination_row, destination_col, piece: Piece):
         self.board[piece.row][piece.col] = None
+        self.board[destination_row][destination_col] = piece
         piece.update_position(destination_row, destination_col)
 
     def get_piece_from_coordinates(self, row: int, col: int) -> Optional[Piece]:
@@ -39,7 +40,7 @@ class Board:
         # Create formatted rows
         rows = []
         for row in self.board:
-            formatted_row = "  ".join("{:<{}}".format(item if item is not None else '0', width) for item, width in zip(row, column_widths))
+            formatted_row = " ".join("{:<{}}".format(str(item) if item is not None else "0", width + 2) for item, width in zip(row, column_widths))
             rows.append(formatted_row)
 
         return "\n".join(rows)
@@ -49,7 +50,13 @@ if __name__ == "__main__":
     from back.models.pieces.piece_labels import PIECE_LABEL
     board = Board()
     print(board)
+    row = 2
+    col = 3
     board.add_piece(row=2, col=3, player=1, label=PIECE_LABEL.PAWN)
+    print(board)
+    piece = board.get_piece_from_coordinates(row, col)
+    piece.possible_positions = [(3, 3)]
+    board.move_piece(3, 3, piece=piece)
     print(board)
 
 

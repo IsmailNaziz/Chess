@@ -5,6 +5,7 @@ from back.models.errors import IllegalMoveError
 
 
 class Piece(ABC):
+    LABEL = None
 
     @abstractmethod
     def __init__(self):
@@ -30,3 +31,13 @@ class Piece(ABC):
             self.col = col
         else:
             raise IllegalMoveError('You might have not updated the position of this piece')
+
+    def __repr__(self):
+        return self.LABEL.value
+
+    def __str__(self):
+        return self.LABEL.value
+
+    def __format__(self, format_spec):
+        return self.LABEL.value
+
