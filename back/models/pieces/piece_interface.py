@@ -30,7 +30,8 @@ class Piece(ABC):
             self.row = row
             self.col = col
         else:
-            raise IllegalMoveError('You might have not updated the position of this piece')
+            raise IllegalMoveError('You might have not updated the position of this piece, '
+                                   'or you have made a mistake in possible move implementation')
 
     def __repr__(self):
         return self.LABEL.value
@@ -41,3 +42,5 @@ class Piece(ABC):
     def __format__(self, format_spec):
         return self.LABEL.value
 
+    def __hash__(self):
+        return hash(id(self))
