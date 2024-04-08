@@ -1,2 +1,2 @@
 # Chess
-Game of chess
+Implementation of Game of chess
