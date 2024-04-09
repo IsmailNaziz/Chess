@@ -11,6 +11,7 @@ class ChessView:
         pygame.init()
         self.window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption(WINDOW_NAME)
+        self.drawn_pieces = {}
 
 
     def draw_board(self):
@@ -27,6 +28,9 @@ class ChessView:
         piece_position_on_window_x -= 50
         piece_position_on_window_y -= 55
         self.window.blit(piece_image, (piece_position_on_window_x, piece_position_on_window_y))
+        image_rect = piece_image.get_rect()
+        image_rect.topleft = (piece_position_on_window_x, piece_position_on_window_y)
+        self.drawn_pieces[piece] = image_rect
 
     def draw_pieces(self, chess_model):
         for piece in chess_model.pieces:

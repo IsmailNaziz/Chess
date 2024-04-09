@@ -15,13 +15,26 @@ class CheckerController:
         self.chess_model = ChessModel()
         self.chess_view = ChessView()
         self.selected_piece = None
+        self.dragged_piece = None
 
 
     def get_selected_cell_content(self, x, y) -> Optional[Piece]:
         selected_cell_row, selected_cell_col = self.chess_view.compute_board_indexes_from_position_on_window(x, y)
         return self.chess_model.board[selected_cell_row][selected_cell_col]
 
-    def click_on_grid(self):
+    def click_on_grid(self, event):
+        for piece in self.chess_model.pieces:
+            if self.chess_view.drawn_pieces[piece].collidepoint(event.pos):
+                self.dragged_piece = piece
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            if event.button == 1:
+                self.dragged_piece = None
+
+        if event.type == pygame.MOUSEMOTION:
+            if self.dragged_piece:
+                self.chess_view.drawn_pieces[self.dragged_piece].move_ip(event.rel)
+
         clicked_position = pygame.mouse.get_pos()
         clicked_row, clicked_col = \
             self.chess_view.compute_board_indexes_from_position_on_window(*clicked_position)
@@ -62,8 +75,8 @@ class CheckerController:
                 if event.type == pygame.QUIT:
                     running = False
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.click_on_grid()
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    self.click_on_grid(event)
                     self.undo_action(event)
 
             self.chess_view.update_grid(self.chess_model)
