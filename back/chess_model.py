@@ -7,6 +7,7 @@ from back.models.errors import AlreadyTakenPosition
 from back.models.pieces import pieces_catalog
 from back.models.pieces.piece_interface import Piece
 from back.models.player.player import PLAYER
+from back.models.pieces.piece_labels import PIECE_LABEL
 
 """
 For read me for back end 
@@ -21,11 +22,15 @@ class ChessModel:
         self.previous_model_state = None
         self.pieces = []
         self.allowed_moves = {}
-        self.player_turn = PLAYER.PLAYER_1.value
+        self.player_turn = PLAYER.PLAYER_1
+
+    @staticmethod
+    def is_in_bound(row, col):
+        return row >= 0 and row < BOARD_SIZE and col >= 0 and col < BOARD_SIZE
 
     def update_allowed_moves(self):
-        _ = [piece.update_possible_positions() for piece in self.pieces]
-        self.allowed_moves = {piece: piece.possible_positions for piece in self.pieces}
+        _ = [piece.update_allowed_positions(self.board) for piece in self.pieces]
+        self.allowed_moves = {piece: piece.allowed_positions for piece in self.pieces}
 
     def move_piece(self, destination_row: int, destination_col: int, piece: Piece):
         self.previous_model_state = deepcopy(self)
@@ -38,29 +43,37 @@ class ChessModel:
         self.pieces.remove(piece)
         del piece
 
-    def get_piece_from_coordinates(self, row: int, col: int) -> Optional[Piece]:
-        if isinstance(self.board[row][col], Piece):
+    def get_cell_content_from_indexes(self, row: int, col: int) -> Optional[Piece]:
+        if self.is_in_bound(row, col) and isinstance(self.board[row][col], Piece):
             return self.board[row][col]
         return None
 
     def add_piece(self, row, col, player, label):
-        if self.get_piece_from_coordinates(row, col):
+        if self.get_cell_content_from_indexes(row, col):
             raise AlreadyTakenPosition('There is a piece in this position, select an empty position')
         piece_class = pieces_catalog[label]
         piece = piece_class(row, col, player)
         self.board[piece.row][piece.col] = piece
         self.pieces.append(piece)
+        return piece
 
     def undo(self):
         if self.previous_model_state:
             self.__dict__ = self.previous_model_state.__dict__
 
+    def capture_piece(self):
+        raise NotImplementedError
+
+    def castle(self):
+        raise NotImplementedError
+
+    def fill_board(self):
+        self.add_piece(row=0, col=4, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
+        self.add_piece(row=7, col=4, player=PLAYER.PLAYER_2, label=PIECE_LABEL.PAWN)
+
     def run(self):
         self.fill_board()
         self.update_allowed_moves()
-
-    def fill_board(self):
-        raise NotImplementedError
 
     def __repr__(self):
         column_widths = [max(len(str(item)) if item is not None else 0 for item in col) for col in zip(*self.board)]
@@ -75,15 +88,13 @@ class ChessModel:
 
 
 if __name__ == "__main__":
-    from back.models.pieces.piece_labels import PIECE_LABEL
     chess_model = ChessModel()
     print(chess_model)
     row = 2
     col = 3
-    chess_model.add_piece(row=2, col=3, player=1, label=PIECE_LABEL.PAWN)
+    piece = chess_model.add_piece(row=2, col=3, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
     print(chess_model)
-    piece = chess_model.get_piece_from_coordinates(row, col)
-    piece.possible_positions = [(7, 4)]
+    piece.allowed_positions = [(7, 4)]
     chess_model.move_piece(7, 4, piece=piece)
     print(chess_model)
     chess_model.undo()

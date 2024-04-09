@@ -12,21 +12,21 @@ class Piece(ABC):
         self.row = None
         self.col = None
         self.player = None
-        self.possible_positions = []
+        self.allowed_positions = []
 
     @abstractmethod
-    def update_possible_positions(self, board, row, col) -> List[tuple]:
+    def update_allowed_positions(self, board):
         """
         :param board: current board
         :param row: row of the piece in the board
         :param col: col of the piece in the board
         :return:
-        list of possible rows and cols that are inside the board and that are legal
+        modifies self.allowed_positions
         """
         pass
 
     def update_position(self, row, col) -> None:
-        if (row, col) in self.possible_positions:
+        if (row, col) in self.allowed_positions:
             self.row = row
             self.col = col
         else:

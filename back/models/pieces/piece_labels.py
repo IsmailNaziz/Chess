@@ -2,4 +2,4 @@ from enum import Enum
 
 
 class PIECE_LABEL(Enum):
-    PAWN = 'PAWN'
+    PAWN = 'pawn'

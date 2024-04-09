@@ -1,5 +1,6 @@
 from typing import List
 
+from back.configuration import BOARD_SIZE
 from back.models.pieces.piece_interface import Piece
 from back.models.pieces.piece_labels import PIECE_LABEL
 from back.models.player.player import PLAYER
@@ -12,15 +13,15 @@ class Pawn(Piece):
         self.row = row
         self.col = col
         self.player = player
-        self.possible_positions = []
+        self.allowed_positions = []
 
-    def update_possible_positions(self, board, row: int, col: int) -> List[tuple]:
+    def update_allowed_positions(self, board):
         """
         :param board: current board
         :param row: row of the piece in the board
         :param col: col of the piece in the board
-        :return:
-        list of possible rows and cols that are inside the board and that are legal
+        modifies self.allowed_positions
         """
-        pass
+        #TODO: to be changed, test value only
+        self.allowed_positions = [(row, col) for row in range(BOARD_SIZE) for col in range(BOARD_SIZE)]
 
