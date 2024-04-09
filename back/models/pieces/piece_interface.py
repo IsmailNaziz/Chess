@@ -44,3 +44,6 @@ class Piece(ABC):
 
     def __hash__(self):
         return hash(id(self))
+
+    def __eq__(self, other):
+        return hash(id(self)) == hash(id(other))

@@ -23,8 +23,7 @@ class ChessView:
     def draw_piece(self, piece):
         piece_position_on_window_x, piece_position_on_window_y = ChessView.compute_position_on_window_from_board_indexes(piece.row, piece.col)
         piece_image = piece_image_catalog[piece.player][piece.LABEL]
-        image_rect = piece_image.get_rect()
-        print("draw image location", piece_position_on_window_x, piece_position_on_window_y)
+        # center image
         piece_position_on_window_x -= 50
         piece_position_on_window_y -= 55
         self.window.blit(piece_image, (piece_position_on_window_x, piece_position_on_window_y))
@@ -52,23 +51,21 @@ class ChessView:
         # draw all elements of menu
         self.draw_undo_button()
 
-    def set_grid(self, chess_model):
+    def update_grid(self, chess_model):
         self.draw_board()
         self.draw_right_side_bar_menu()
-        self.update_grid(chess_model)
-
-    def update_grid(self, chess_model):
         self.draw_pieces(chess_model)
+
 
 
     def display_allowed_moves(self, selected_piece, chess_model):
         selected_piece_position_on_window = self.compute_position_on_window_from_board_indexes(selected_piece.row,
                                                                                                selected_piece.col)
-        pygame.draw.circle(self.window, BLUE, selected_piece_position_on_window, 10)
 
         for allowed_move in chess_model.allowed_moves[selected_piece]:
             allowed_move_position = self.compute_position_on_window_from_board_indexes(*allowed_move)
             pygame.draw.circle(self.window, GREEN, allowed_move_position, 10)
+        pygame.draw.circle(self.window, BLUE, selected_piece_position_on_window, 10)
 
     @staticmethod
     def compute_position_on_window_from_board_indexes(row, col):
