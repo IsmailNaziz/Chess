@@ -8,6 +8,7 @@ from back.models.pieces import pieces_catalog
 from back.models.pieces.piece_interface import Piece
 from back.models.player.player import PLAYER
 from back.models.pieces.piece_labels import PIECE_LABEL
+from back.tool_box import is_in_bound
 
 """
 For read me for back end 
@@ -24,27 +25,34 @@ class ChessModel:
         self.allowed_moves = {}
         self.player_turn = PLAYER.PLAYER_1
 
-    @staticmethod
-    def is_in_bound(row, col):
-        return row >= 0 and row < BOARD_SIZE and col >= 0 and col < BOARD_SIZE
+    def update_player_turn(self):
+        if self.player_turn == PLAYER.PLAYER_1:
+            self.player_turn = PLAYER.PLAYER_2
+        elif self.player_turn == PLAYER.PLAYER_2:
+            self.player_turn = PLAYER.PLAYER_1
 
     def update_allowed_moves(self):
-        _ = [piece.update_allowed_positions(self.board) for piece in self.pieces]
+        _ = [piece.update_allowed_positions(self) for piece in self.pieces]
         self.allowed_moves = {piece: piece.allowed_positions for piece in self.pieces}
 
     def move_piece(self, destination_row: int, destination_col: int, piece: Piece):
         self.previous_model_state = deepcopy(self)
+        cell_content = self.get_cell_content_from_indexes(destination_row, destination_col)
+        if cell_content is not None and cell_content.player != piece.player:
+            self.remove_piece(cell_content)
         self.board[piece.row][piece.col] = None
         self.board[destination_row][destination_col] = piece
         piece.update_position(destination_row, destination_col)
+        self.update_player_turn()
 
     def remove_piece(self, piece: Piece):
         self.board[piece.row][piece.col] = None
         self.pieces.remove(piece)
+        del self.allowed_moves[piece]
         del piece
 
     def get_cell_content_from_indexes(self, row: int, col: int) -> Optional[Piece]:
-        if self.is_in_bound(row, col) and isinstance(self.board[row][col], Piece):
+        if is_in_bound(row, col) and isinstance(self.board[row][col], Piece):
             return self.board[row][col]
         return None
 
@@ -68,8 +76,9 @@ class ChessModel:
         raise NotImplementedError
 
     def fill_board(self):
-        self.add_piece(row=0, col=4, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
-        self.add_piece(row=7, col=4, player=PLAYER.PLAYER_2, label=PIECE_LABEL.PAWN)
+        self.add_piece(row=3, col=4, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
+        self.add_piece(row=3, col=5, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
+        self.add_piece(row=5, col=3, player=PLAYER.PLAYER_2, label=PIECE_LABEL.PAWN)
 
     def run(self):
         self.fill_board()

@@ -15,7 +15,7 @@ class Piece(ABC):
         self.allowed_positions = []
 
     @abstractmethod
-    def update_allowed_positions(self, board):
+    def update_allowed_positions(self, chess_model):
         """
         :param board: current board
         :param row: row of the piece in the board

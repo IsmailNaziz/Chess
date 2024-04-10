@@ -61,7 +61,6 @@ class ChessView:
     def display_allowed_moves(self, selected_piece, chess_model):
         selected_piece_position_on_window = self.compute_position_on_window_from_board_indexes(selected_piece.row,
                                                                                                selected_piece.col)
-
         for allowed_move in chess_model.allowed_moves[selected_piece]:
             allowed_move_position = self.compute_position_on_window_from_board_indexes(*allowed_move)
             pygame.draw.circle(self.window, GREEN, allowed_move_position, 10)
