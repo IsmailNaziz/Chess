@@ -14,13 +14,11 @@ class Piece(ABC):
         self.player = None
         self.allowed_positions = []
 
-    @abstractmethod
     @property
     def possible_positions(self):
         # corresponds to natural piece movement if nothing interferes
         pass
 
-    @abstractmethod
     @property
     def possible_capture_positions(self):
         # corresponds to positions that are only reachable when capturing other pieces

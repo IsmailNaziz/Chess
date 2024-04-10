@@ -19,6 +19,7 @@ Always use  x, y for methods or encapsulate them in a method
 class ChessModel:
 
     def __init__(self):
+        # maybe transform board to private attribute so the unique way of updating is to use the methods
         self.board = [[None for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
         self.previous_model_state = None
         self.pieces = []
@@ -49,7 +50,6 @@ class ChessModel:
         self.board[piece.row][piece.col] = None
         self.pieces.remove(piece)
         del self.allowed_moves[piece]
-        del piece
 
     def get_position_content_from_indexes(self, row: int, col: int) -> Optional[Piece]:
         if is_in_bound(row, col) and isinstance(self.board[row][col], Piece):
@@ -63,6 +63,10 @@ class ChessModel:
         piece = piece_class(row, col, player)
         self.board[piece.row][piece.col] = piece
         self.pieces.append(piece)
+        # update of allowed position to always have a consistent state as we fill the board
+        # We can decide to delete this for optimization, but it will break test
+        piece.update_allowed_positions(self)
+        self.update_allowed_moves()
         return piece
 
     def undo(self):
@@ -73,13 +77,14 @@ class ChessModel:
         raise NotImplementedError
 
     def fill_board(self):
-        self.add_piece(row=3, col=4, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
-        self.add_piece(row=3, col=5, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
-        self.add_piece(row=5, col=3, player=PLAYER.PLAYER_2, label=PIECE_LABEL.PAWN)
+        self.add_piece(row=5, col=3, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
+        self.add_piece(row=3, col=4, player=PLAYER.PLAYER_2, label=PIECE_LABEL.PAWN)
+        self.add_piece(row=3, col=5, player=PLAYER.PLAYER_2, label=PIECE_LABEL.PAWN)
 
     def run(self):
         self.fill_board()
         self.update_allowed_moves()
+        self.run = True
 
     def __repr__(self):
         column_widths = [max(len(str(item)) if item is not None else 0 for item in col) for col in zip(*self.board)]
@@ -90,7 +95,10 @@ class ChessModel:
                 zip(row, column_widths))
             rows.append(formatted_row)
 
-        return '-' * 30 + "\n" + "\n".join(rows)
+        return ' ' * 30 + "\n" + "\n".join(rows)
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
 
 
 if __name__ == "__main__":

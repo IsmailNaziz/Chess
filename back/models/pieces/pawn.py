@@ -15,7 +15,7 @@ class Pawn(Piece):
         self.col = col
         self.player = player
         self.allowed_positions = []
-        self.translation = 1 if self.player == PLAYER.PLAYER_1 else -1
+        self.translation = -1 if self.player == PLAYER.PLAYER_1 else 1
 
     @property
     def possible_positions(self):
@@ -49,6 +49,7 @@ class Pawn(Piece):
                 valid_capture_positions.append(capture_position)
 
         # TODO: if the move after been made, makes own player in check position
+        # TODO: prise en passant
 
         self.allowed_positions = valid_capture_positions + not_taken_by_aly_piece_positions
 
