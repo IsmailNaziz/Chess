@@ -15,6 +15,17 @@ class Pawn(Piece):
         self.col = col
         self.player = player
         self.allowed_positions = []
+        self.translation = 1 if self.player == PLAYER.PLAYER_1 else -1
+
+    @property
+    def possible_positions(self):
+        # corresponds to natural piece movement if nothing interferes
+        return [(self.row+self.translation, self.col)]
+
+    @property
+    def possible_capture_positions(self):
+        # corresponds to positions that are only reachable when capturing other pieces
+        return [(self.row+self.translation, self.col+1), (self.row+self.translation, self.col-1)]
 
     def update_allowed_positions(self, chess_model):
         """
@@ -27,27 +38,17 @@ class Pawn(Piece):
             self.allowed_positions = []
             return
 
-        translation = 0
-        if self.player == PLAYER.PLAYER_1:
-            translation = 1
-        elif self.player == PLAYER.PLAYER_2:
-            translation = -1
-
-        possible_positions = [(self.row+translation, self.col)]  # corresponds to natural piece movement if nothing interferes
-
-        # consecutive filter with explicit variable names
-        in_bound_positions = [position for position in possible_positions if is_in_bound(*position)]
+        in_bound_positions = [position for position in self.possible_positions if is_in_bound(*position)]
         not_taken_by_aly_piece_positions = [position for position in in_bound_positions
-                                            if chess_model.get_cell_content_from_indexes(*position) is None]
+                                            if chess_model.get_position_content_from_indexes(*position) is None]
+
+        valid_capture_positions = []
+        for capture_position in self.possible_capture_positions:
+            position_content = chess_model.get_position_content_from_indexes(*capture_position)
+            if position_content is not None and position_content.player != self.player:
+                valid_capture_positions.append(capture_position)
 
         # TODO: if the move after been made, makes own player in check position
-        possible_capture_positions = [(self.row+translation, self.col+1),
-                                      (self.row+translation, self.col-1)]
-        valid_capture_positions = []
-        for capture_position in possible_capture_positions:
-            cell_content = chess_model.get_cell_content_from_indexes(*capture_position)
-            if cell_content is not None and cell_content.player != self.player:
-                valid_capture_positions.append(capture_position)
 
         self.allowed_positions = valid_capture_positions + not_taken_by_aly_piece_positions
 

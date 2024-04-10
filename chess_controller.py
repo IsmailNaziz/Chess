@@ -25,7 +25,7 @@ class CheckerController:
         clicked_position = pygame.mouse.get_pos()
         clicked_row, clicked_col = \
             self.chess_view.compute_board_indexes_from_position_on_window(*clicked_position)
-        clicked_cell_content = self.chess_model.get_cell_content_from_indexes(clicked_row, clicked_col)
+        clicked_cell_content = self.chess_model.get_position_content_from_indexes(clicked_row, clicked_col)
 
         if self.selected_piece is not None:
             # clicking on green spot
@@ -34,7 +34,6 @@ class CheckerController:
                 self.selected_piece = None
 
         if clicked_cell_content:
-            # TODO: if enemy piece in cell content capture
             if clicked_cell_content != self.selected_piece:
                 # select new piece
                 self.selected_piece = clicked_cell_content

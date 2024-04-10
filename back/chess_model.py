@@ -37,9 +37,9 @@ class ChessModel:
 
     def move_piece(self, destination_row: int, destination_col: int, piece: Piece):
         self.previous_model_state = deepcopy(self)
-        cell_content = self.get_cell_content_from_indexes(destination_row, destination_col)
-        if cell_content is not None and cell_content.player != piece.player:
-            self.remove_piece(cell_content)
+        position_content = self.get_position_content_from_indexes(destination_row, destination_col)
+        if position_content is not None and position_content.player != piece.player:
+            self.remove_piece(position_content)
         self.board[piece.row][piece.col] = None
         self.board[destination_row][destination_col] = piece
         piece.update_position(destination_row, destination_col)
@@ -51,13 +51,13 @@ class ChessModel:
         del self.allowed_moves[piece]
         del piece
 
-    def get_cell_content_from_indexes(self, row: int, col: int) -> Optional[Piece]:
+    def get_position_content_from_indexes(self, row: int, col: int) -> Optional[Piece]:
         if is_in_bound(row, col) and isinstance(self.board[row][col], Piece):
             return self.board[row][col]
         return None
 
     def add_piece(self, row, col, player, label):
-        if self.get_cell_content_from_indexes(row, col):
+        if self.get_position_content_from_indexes(row, col):
             raise AlreadyTakenPosition('There is a piece in this position, select an empty position')
         piece_class = pieces_catalog[label]
         piece = piece_class(row, col, player)
@@ -68,9 +68,6 @@ class ChessModel:
     def undo(self):
         if self.previous_model_state:
             self.__dict__ = self.previous_model_state.__dict__
-
-    def capture_piece(self):
-        raise NotImplementedError
 
     def castle(self):
         raise NotImplementedError
