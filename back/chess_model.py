@@ -44,6 +44,7 @@ class ChessModel:
         self.board[piece.row][piece.col] = None
         self.board[destination_row][destination_col] = piece
         piece.update_position(destination_row, destination_col)
+        self.update_allowed_moves()
         self.update_player_turn()
 
     def remove_piece(self, piece: Piece):
@@ -84,7 +85,6 @@ class ChessModel:
     def run(self):
         self.fill_board()
         self.update_allowed_moves()
-        self.run = True
 
     def __repr__(self):
         column_widths = [max(len(str(item)) if item is not None else 0 for item in col) for col in zip(*self.board)]
