@@ -32,12 +32,14 @@ SQUARE_SIZE = BOARD_HEIGHT // BOARD_SIZE
 PIECE_IMAGE_SCALE = (SQUARE_SIZE, SQUARE_SIZE)
 
 parent_directory = Path(os.path.dirname(os.path.abspath(__file__)))
+white_pieces_directory = 'assets/white_pieces'
+black_pieces_directory = 'assets/black_pieces'
 piece_image_catalog = {
     PLAYER.PLAYER_1: {
-        Pawn.LABEL: pygame.transform.scale(pygame.image.load(parent_directory / f'assets/white_pieces/{Pawn.LABEL.value}.png'),
+        Pawn.LABEL: pygame.transform.scale(pygame.image.load(parent_directory / white_pieces_directory / f'{Pawn.LABEL.value}.png'),
                                            PIECE_IMAGE_SCALE)},
     PLAYER.PLAYER_2: {
-        Pawn.LABEL: pygame.transform.scale(pygame.image.load(parent_directory / f'assets/black_pieces/{Pawn.LABEL.value}.png'),
+        Pawn.LABEL: pygame.transform.scale(pygame.image.load(parent_directory / black_pieces_directory / f'{Pawn.LABEL.value}.png'),
                                            PIECE_IMAGE_SCALE)}
 }
 
