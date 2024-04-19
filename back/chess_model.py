@@ -81,6 +81,8 @@ class ChessModel:
         self.add_piece(row=5, col=3, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
         self.add_piece(row=3, col=4, player=PLAYER.PLAYER_2, label=PIECE_LABEL.PAWN)
         self.add_piece(row=3, col=5, player=PLAYER.PLAYER_2, label=PIECE_LABEL.PAWN)
+        self.add_piece(row=1, col=2, player=PLAYER.PLAYER_1, label=PIECE_LABEL.BISHOP)
+        #self.add_piece(row=2, col=1, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
 
     def run(self):
         self.fill_board()

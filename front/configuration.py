@@ -4,6 +4,7 @@ import pygame
 import os
 from back.configuration import BOARD_SIZE
 from back.models.pieces.pawn import Pawn
+from back.models.pieces.bishop import Bishop
 from back.models.player.player import PLAYER
 
 # BOARD SIZING
@@ -35,13 +36,20 @@ parent_directory = Path(os.path.dirname(os.path.abspath(__file__)))
 white_pieces_directory = 'assets/white_pieces'
 black_pieces_directory = 'assets/black_pieces'
 piece_image_catalog = {
-    PLAYER.PLAYER_1: {
-        Pawn.LABEL: pygame.transform.scale(pygame.image.load(parent_directory / white_pieces_directory / f'{Pawn.LABEL.value}.png'),
-                                           PIECE_IMAGE_SCALE)},
-    PLAYER.PLAYER_2: {
-        Pawn.LABEL: pygame.transform.scale(pygame.image.load(parent_directory / black_pieces_directory / f'{Pawn.LABEL.value}.png'),
-                                           PIECE_IMAGE_SCALE)}
-}
+                        PLAYER.PLAYER_1: {
+                                        Pawn.LABEL: pygame.transform.scale(pygame.image.load(parent_directory / white_pieces_directory / f'{Pawn.LABEL.value}.png'),
+                                                                           PIECE_IMAGE_SCALE),
+                                        Bishop.LABEL: pygame.transform.scale( pygame.image.load(parent_directory / white_pieces_directory / f'{Bishop.LABEL.value}.png'),
+                                          PIECE_IMAGE_SCALE),
+                                        },
+                        PLAYER.PLAYER_2: {
+                                        Pawn.LABEL: pygame.transform.scale(pygame.image.load(parent_directory / black_pieces_directory / f'{Pawn.LABEL.value}.png'),
+                                                               PIECE_IMAGE_SCALE),
+                                        Bishop.LABEL: pygame.transform.scale(pygame.image.load(parent_directory / black_pieces_directory / f'{Bishop.LABEL.value}.png'),
+                                                                PIECE_IMAGE_SCALE)
+                                        }
+                    }
+
 
 
 
