@@ -37,16 +37,15 @@ class Bishop(Piece):
 
         in_bound_positions = [position for position in self.possible_positions if is_in_bound(*position)]
 
-        in_sight_line = in_bound_positions
+        in_sight_positions = in_bound_positions
         for piece in chess_model.pieces:
-            if (piece.row, piece.col) in in_sight_line:
+            if piece != self and (piece.row, piece.col) in in_sight_positions:
                 filter_function = self.get_dial_filter_function(piece.row, piece.col)
-                in_sight_line = [position for position in in_sight_line if filter_function(*position)]
-                # possible to capture, manage when values are equal
+                in_sight_positions = [position for position in in_sight_positions if filter_function(*position)]
                 if piece.player != self.player:
-                    in_sight_line.append((piece.row, piece.col))
+                    in_sight_positions.append((piece.row, piece.col))
 
-        self.allowed_positions = in_sight_line
+        self.allowed_positions = in_sight_positions
 
     def get_dial_filter_function(self, row, col) -> Callable:
         """
@@ -57,18 +56,28 @@ class Bishop(Piece):
                          |
                      3   |    4
                          |
-        returns the dial id from given coordinates
+        returns the dial filter from given coordinates
         """
 
         if row <= self.row and col <= self.col:
-            return lambda r, c: r < row and c < col
+            """
+            *********|   |            
+            *********|   |
+           __________1   |    2
+                         |
+                ---------B---------
+                         |
+                     3   |    4
+                         |
+            the function filters out all the star zone ine dial 1
+            """
+            return lambda r, c: not (r <= row and c <= col)
 
         if row <= self.row and col >= self.col:
-            return lambda r, c: r < row and c > col
+            return lambda r, c: not (r <= row and c >= col)
 
         if row >= self.row and col <= self.col:
-            return lambda r, c: r > row and c < col
+            return lambda r, c: not (r >= row and c <= col)
 
         if row >= self.row and col >= self.col:
-            return lambda r, c: r > row and c > col
-
+            return lambda r, c: not (r >= row and c >= col)
