@@ -1,5 +1,3 @@
-from typing import Callable
-
 from back.configuration import BOARD_SIZE
 from back.models.pieces.piece_interface import Piece
 from back.models.pieces.piece_labels import PIECE_LABEL
@@ -21,8 +19,9 @@ class Bishop(Piece):
         # corresponds to natural piece movement if nothing interferes
         return [(possible_row, possible_col)
                 for possible_row in range(BOARD_SIZE) for possible_col in range(BOARD_SIZE)
-                if (self.row + self.col == possible_row + possible_col) or
-                (self.row - self.col == possible_row - possible_col)]
+                if ((self.row + self.col == possible_row + possible_col) or
+                (self.row - self.col == possible_row - possible_col))
+                and (self.row, self.col) != (possible_row, possible_col)]
 
     def update_allowed_positions(self, chess_model):
         """
@@ -40,44 +39,10 @@ class Bishop(Piece):
         in_sight_positions = in_bound_positions
         for piece in chess_model.pieces:
             if piece != self and (piece.row, piece.col) in in_sight_positions:
-                filter_function = self.get_dial_filter_function(piece.row, piece.col)
-                in_sight_positions = [position for position in in_sight_positions if filter_function(*position)]
+                diagonal_filter_function = self.get_dial_filter_function(piece.row, piece.col)
+                in_sight_positions = [position for position in in_sight_positions if diagonal_filter_function(*position)]
                 if piece.player != self.player:
                     in_sight_positions.append((piece.row, piece.col))
 
         self.allowed_positions = in_sight_positions
 
-    def get_dial_filter_function(self, row, col) -> Callable:
-        """
-                         |
-                    1    |    2
-                         |
-                ---------B---------
-                         |
-                     3   |    4
-                         |
-        returns the dial filter from given coordinates
-        """
-
-        if row <= self.row and col <= self.col:
-            """
-            *********|   |            
-            *********|   |
-           __________1   |    2
-                         |
-                ---------B---------
-                         |
-                     3   |    4
-                         |
-            the function filters out all the star zone ine dial 1
-            """
-            return lambda r, c: not (r <= row and c <= col)
-
-        if row <= self.row and col >= self.col:
-            return lambda r, c: not (r <= row and c >= col)
-
-        if row >= self.row and col <= self.col:
-            return lambda r, c: not (r >= row and c <= col)
-
-        if row >= self.row and col >= self.col:
-            return lambda r, c: not (r >= row and c >= col)

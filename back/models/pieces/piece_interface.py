@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Callable
 
 from back.models.errors import IllegalMoveError
 
@@ -57,3 +57,105 @@ class Piece(ABC):
 
     def __eq__(self, other):
         return hash(id(self)) == hash(id(other))
+
+    def get_dial_filter_function(self, row, col) -> Callable:
+        """
+                         |
+                    1    |    2
+                         |
+                ---------B---------
+                         |
+                     3   |    4
+                         |
+        returns the dial filter from given coordinates
+        """
+
+        if row <= self.row and col <= self.col:
+            """
+            *********|   |            
+            *********|   |
+           __________1   |    2
+                         |
+                ---------B---------
+                         |
+                     3   |    4
+                         |
+            the function filters out all the star zone ine dial 1
+            """
+            return lambda r, c: not (r <= row and c <= col)
+
+        if row <= self.row and col >= self.col:
+            return lambda r, c: not (r <= row and c >= col)
+
+        if row >= self.row and col <= self.col:
+            return lambda r, c: not (r >= row and c <= col)
+
+        if row >= self.row and col >= self.col:
+            return lambda r, c: not (r >= row and c >= col)
+
+    def get_straight_line_filter_function(self, row, col) -> Callable:
+        """
+                         *
+                         *
+                         up
+                         |
+                **left---B-----right**
+                         down
+                         *
+                         *
+        returns the line filter from given coordinates
+        """
+
+        if row <= self.row and col == self.col:
+            """     
+                         *
+                         *
+                         up    
+                         |
+                ---------B---------
+                         |
+                         |  
+                         |
+            the function filters out all the star zone up
+            """
+            return lambda r, c: not (r <= row and c == col)
+
+        if row >= self.row and col == self.col:
+            """
+                         |
+                         |    
+                         |
+                ---------B---------
+                         |
+                         down  
+                         *
+                         *
+            the function filters out all the star zone up
+            """
+            return lambda r, c: not (r >= row and c == col)
+
+        if row == self.row and col >= self.col:
+            """
+                         |
+                         |    
+                         |
+                ---------B------right**
+                         |
+                         | 
+                         |
+            the function filters out all the star zone up
+            """
+            return lambda r, c: not (r == row and c >= col)
+
+        if row == self.row and col <= self.col:
+            """
+                         |
+                         |    
+                         |
+                **left---B---------
+                         |
+                         | 
+                         |
+            the function filters out all the star zone up
+            """
+            return lambda r, c: not (r == row and c <= col)
