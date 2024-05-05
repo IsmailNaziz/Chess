@@ -31,6 +31,7 @@ class King(Piece):
         :param col: col of the piece in the board
         modifies self.allowed_positions
         """
+        #TODO: Add castle move
 
         if chess_model.player_turn != self.player:
             self.allowed_positions = []

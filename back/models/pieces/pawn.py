@@ -50,6 +50,7 @@ class Pawn(Piece):
 
         # TODO: if the move after been made, makes own player in check position
         # TODO: prise en passant
+        # TODO: if first move of pawn -> 2 translations allowed
 
         self.allowed_positions = valid_capture_positions + not_taken_by_aly_piece_positions
 

@@ -43,4 +43,6 @@ class Rook(Piece):
                 if piece.player != self.player:
                     in_sight_positions.append((piece.row, piece.col))
 
+        # TODO: add castle
+
         self.allowed_positions = in_sight_positions

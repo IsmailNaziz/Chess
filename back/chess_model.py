@@ -37,6 +37,10 @@ class ChessModel:
         self.allowed_moves = {piece: piece.allowed_positions for piece in self.pieces}
 
     def move_piece(self, destination_row: int, destination_col: int, piece: Piece):
+        # TODO: add castle + prise en passant
+        # TODO: Implement check
+        # TODO: Implement stalemate
+        # TODO: Implement pin
         self.previous_model_state = deepcopy(self)
         position_content = self.get_position_content_from_indexes(destination_row, destination_col)
         if position_content is not None and position_content.player != piece.player:
