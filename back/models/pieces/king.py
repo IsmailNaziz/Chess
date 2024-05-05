@@ -1,3 +1,4 @@
+from itertools import product
 from typing import List
 
 from back.configuration import BOARD_SIZE
@@ -18,13 +19,10 @@ class King(Piece):
 
     @property
     def possible_positions(self):
-        # corresponds to natural piece movement if nothing interferes
-        return []
+        return [(self.row + row_offset, self.col + col_offset)
+                for row_offset, col_offset in product([-1, 0, 1], [-1, 0, 1])
+                if row_offset != 0 and col_offset != 0]
 
-    @property
-    def possible_capture_positions(self):
-        # corresponds to positions that are only reachable when capturing other pieces
-        return []
 
     def update_allowed_positions(self, chess_model):
         """
@@ -34,5 +32,11 @@ class King(Piece):
         modifies self.allowed_positions
         """
 
-        self.allowed_positions = [(r, c) for r in range(BOARD_SIZE) for c in range(BOARD_SIZE)]
+        if chess_model.player_turn != self.player:
+            self.allowed_positions = []
+            return
 
+        in_bound_positions = [position for position in self.possible_positions if is_in_bound(*position)]
+        not_taken_by_aly_piece_positions = [position for position in in_bound_positions
+                                            if chess_model.get_position_content_from_indexes(*position) is None]
+        self.allowed_positions = not_taken_by_aly_piece_positions
