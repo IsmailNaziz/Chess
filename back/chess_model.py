@@ -88,11 +88,11 @@ class ChessModel:
         # self.add_piece(row=1, col=2, player=PLAYER.PLAYER_1, label=PIECE_LABEL.BISHOP)
         #self.add_piece(row=2, col=1, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
         self.add_piece(row=7, col=0, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
-        self.add_piece(row=7, col=1, player=PLAYER.PLAYER_1, label=PIECE_LABEL.BISHOP)
+        self.add_piece(row=7, col=1, player=PLAYER.PLAYER_2, label=PIECE_LABEL.BISHOP)
         self.add_piece(row=7, col=2, player=PLAYER.PLAYER_1, label=PIECE_LABEL.QUEEN)
-        self.add_piece(row=7, col=3, player=PLAYER.PLAYER_1, label=PIECE_LABEL.KING)
+        self.add_piece(row=7, col=3, player=PLAYER.PLAYER_2, label=PIECE_LABEL.KING)
         self.add_piece(row=7, col=4, player=PLAYER.PLAYER_1, label=PIECE_LABEL.KNIGHT)
-        self.add_piece(row=7, col=5, player=PLAYER.PLAYER_1, label=PIECE_LABEL.ROOK)
+        self.add_piece(row=7, col=5, player=PLAYER.PLAYER_2, label=PIECE_LABEL.ROOK)
 
     def run(self):
         self.fill_board()
@@ -116,13 +116,8 @@ class ChessModel:
 if __name__ == "__main__":
     chess_model = ChessModel()
     print(chess_model)
-    row = 2
-    col = 3
-    piece = chess_model.add_piece(row=2, col=3, player=PLAYER.PLAYER_1, label=PIECE_LABEL.PAWN)
-    print(chess_model)
-    piece.allowed_positions = [(7, 4)]
-    chess_model.move_piece(7, 4, piece=piece)
-    print(chess_model)
-    chess_model.undo()
+    chess_model.run()
+    piece = chess_model.get_position_content_from_indexes(row=7, col=2)
+    chess_model.move_piece(6, 2, piece=piece)
     print(chess_model)
 

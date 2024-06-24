@@ -106,7 +106,7 @@ class Piece(ABC):
         returns the line filter from given coordinates
         """
 
-        if row <= self.row and col == self.col:
+        if row < self.row and col == self.col:
             """     
                          *
                          *
@@ -120,7 +120,7 @@ class Piece(ABC):
             """
             return lambda r, c: not (r <= row and c == col)
 
-        if row >= self.row and col == self.col:
+        if row > self.row and col == self.col:
             """
                          |
                          |    
@@ -134,7 +134,7 @@ class Piece(ABC):
             """
             return lambda r, c: not (r >= row and c == col)
 
-        if row == self.row and col >= self.col:
+        if row == self.row and col > self.col:
             """
                          |
                          |    
@@ -147,7 +147,7 @@ class Piece(ABC):
             """
             return lambda r, c: not (r == row and c >= col)
 
-        if row == self.row and col <= self.col:
+        if row == self.row and col < self.col:
             """
                          |
                          |    
@@ -159,3 +159,5 @@ class Piece(ABC):
             the function filters out all the star zone up
             """
             return lambda r, c: not (r == row and c <= col)
+
+        return lambda r, c: True
