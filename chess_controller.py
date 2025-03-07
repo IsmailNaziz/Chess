@@ -16,7 +16,6 @@ class CheckerController:
         self.chess_view = ChessView()
         self.selected_piece = None
 
-
     def get_selected_cell_content(self, x, y) -> Optional[Piece]:
         selected_cell_row, selected_cell_col = self.chess_view.compute_board_indexes_from_position_on_window(x, y)
         return self.chess_model.board[selected_cell_row][selected_cell_col]
@@ -45,13 +44,10 @@ class CheckerController:
         if not self.selected_piece:
             return
 
-
-
     def undo_action(self, event):
         if pygame.Rect(*UNDO_BUTTON_POSITION, *BUTTON_SIZE).collidepoint(event.pos):
             self.chess_model.undo()
             self.selected_piece = None
-
 
     def run(self):
         self.chess_model.run()

@@ -12,7 +12,6 @@ class ChessView:
         self.window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption(WINDOW_NAME)
 
-
     def draw_board(self):
         # pygame.draw.rect(self.window, WHITE, (0, 0, BOARD_WIDTH, BOARD_HEIGHT))
         for row in range(0, BOARD_SIZE):
@@ -55,8 +54,6 @@ class ChessView:
         self.draw_board()
         self.draw_right_side_bar_menu()
         self.draw_pieces(chess_model)
-
-
 
     def display_allowed_moves(self, selected_piece, chess_model):
         selected_piece_position_on_window = self.compute_position_on_window_from_board_indexes(selected_piece.row,
