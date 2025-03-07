@@ -54,7 +54,7 @@ class Queen(Piece):
                 straight_line_filter_function = self.get_straight_line_filter_function(piece.row, piece.col)
                 in_sight_positions = [position for position in in_sight_positions
                                       if diagonal_filter_function(*position)
-                                      and straight_line_filter_function(*position)]
+                                      or straight_line_filter_function(*position)]
                 if piece.player != self.player:
                     in_sight_positions.append((piece.row, piece.col))
 
