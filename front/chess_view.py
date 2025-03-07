@@ -61,7 +61,9 @@ class ChessView:
         for allowed_move in chess_model.allowed_moves[selected_piece]:
             allowed_move_position = self.compute_position_on_window_from_board_indexes(*allowed_move)
             pygame.draw.circle(self.window, GREEN, allowed_move_position, 10)
-        pygame.draw.circle(self.window, BLUE, selected_piece_position_on_window, 10)
+
+        if selected_piece.player == chess_model.player_turn:
+            pygame.draw.circle(self.window, BLUE, selected_piece_position_on_window, 10)
 
     @staticmethod
     def compute_position_on_window_from_board_indexes(row, col):
