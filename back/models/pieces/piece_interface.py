@@ -100,6 +100,7 @@ class Piece(ABC):
                          up
                          |
                 **left---B-----right**
+                         |
                          down
                          *
                          *
